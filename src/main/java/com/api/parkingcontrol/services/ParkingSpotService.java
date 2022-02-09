@@ -7,9 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.api.parkingcontrol.repositories.ParkingSpotSpecs.between;
 
 @Service
 public class ParkingSpotService {
@@ -42,8 +45,11 @@ public class ParkingSpotService {
         return parkingSpotRepository.findById(id);
     }
     @Transactional
-    public void delete(ParkingSpotModel parkingSpotModel){
+    public void delete(ParkingSpotModel parkingSpotModel) {
         parkingSpotRepository.delete(parkingSpotModel);
+    }
+    public List<ParkingSpotModel> findByDate(LocalDateTime initialDate, LocalDateTime finalDate){
+        return parkingSpotRepository.findAll(between(initialDate, finalDate));
     }
 
 }
