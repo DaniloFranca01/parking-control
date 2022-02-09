@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.api.parkingcontrol.repositories.ParkingSpotSpecs.between;
+
 @Service
 public class ParkingSpotService {
 
@@ -36,7 +38,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.findAll();
     }
     public List<ParkingSpotModel> findByDate(LocalDateTime initialDate, LocalDateTime finalDate){
-        return parkingSpotRepository.findByDate(initialDate,finalDate);
+        return parkingSpotRepository.findAll(between(initialDate, finalDate));
     }
 
 }
