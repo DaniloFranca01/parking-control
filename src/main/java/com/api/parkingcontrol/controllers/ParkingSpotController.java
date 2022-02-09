@@ -4,6 +4,7 @@ import com.api.parkingcontrol.dto.ParkingSpotDto;
 import com.api.parkingcontrol.models.ParkingSpotModel;
 import com.api.parkingcontrol.services.ParkingSpotService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,13 @@ public class ParkingSpotController {
     @GetMapping
     public ResponseEntity<List<ParkingSpotModel>> getAllParkingSpots(){
         return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findAll());
+    }
+
+    @GetMapping("/{initialDate}/{finalDate}")
+    public ResponseEntity<List<ParkingSpotModel>> getAllParkingSpotsByDate(
+            @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy-HH:mm") LocalDateTime initialDate,
+            @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy-HH:mm") LocalDateTime finalDate) {
+        return ResponseEntity.ok(parkingSpotService.findByDate(initialDate, finalDate));
     }
 
 }
