@@ -1,5 +1,7 @@
 package com.api.parkingcontrol.models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ public class ParkingSpotModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Type(type="org.hibernate.type.UUIDCharType")
     private UUID id;
     @Column(nullable = false, unique = true, length = 10)
     private String parkingSpotNumber;
