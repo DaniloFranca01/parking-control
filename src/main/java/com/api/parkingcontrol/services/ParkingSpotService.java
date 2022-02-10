@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,8 +47,8 @@ public class ParkingSpotService {
     public void delete(ParkingSpotModel parkingSpotModel) {
         parkingSpotRepository.delete(parkingSpotModel);
     }
-    public List<ParkingSpotModel> findByDate(LocalDateTime initialDate, LocalDateTime finalDate){
-        return parkingSpotRepository.findAll(between(initialDate, finalDate));
+    public Page<ParkingSpotModel> findByDate(LocalDateTime initialDate, LocalDateTime finalDate, Pageable pageable){
+        return parkingSpotRepository.findAll(between(initialDate, finalDate),pageable);
     }
 
 }

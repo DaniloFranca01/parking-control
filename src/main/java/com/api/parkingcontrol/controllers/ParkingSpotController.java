@@ -91,10 +91,12 @@ public class ParkingSpotController {
     }
 
     @GetMapping("/{initialDate}/{finalDate}")
-    public ResponseEntity<List<ParkingSpotModel>> getAllParkingSpotsByDate(
+    public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpotsByDate(
             @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy-HH:mm") LocalDateTime initialDate,
-            @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy-HH:mm") LocalDateTime finalDate) {
-        return ResponseEntity.ok(parkingSpotService.findByDate(initialDate, finalDate));
+            @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy-HH:mm") LocalDateTime finalDate,
+            @PageableDefault(page = 0, size = 10, sort = "id",
+                    direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(parkingSpotService.findByDate(initialDate, finalDate, pageable));
     }
 
 }
