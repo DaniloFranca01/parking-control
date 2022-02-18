@@ -16,16 +16,11 @@ public class ParkingSpotModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Type(type="org.hibernate.type.UUIDCharType")
     private UUID id;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
+    private VehicleModel vehicle;
     @Column(nullable = false, unique = true, length = 10)
     private String parkingSpotNumber;
-    @Column(nullable = false, unique = true, length = 7)
-    private String licensePlateCar;
-    @Column(nullable = false, length = 70)
-    private String brandCar;
-    @Column(nullable = false, length = 70)
-    private String modelCar;
-    @Column(nullable = false, length = 70)
-    private String colorCar;
     @Column(nullable = false)
     private LocalDateTime registrationDate;
     @Column(nullable = false, length = 130)
@@ -43,44 +38,20 @@ public class ParkingSpotModel implements Serializable {
         this.id = id;
     }
 
+    public VehicleModel getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(VehicleModel vehicle) {
+        this.vehicle = vehicle;
+    }
+
     public String getParkingSpotNumber() {
         return parkingSpotNumber;
     }
 
     public void setParkingSpotNumber(String parkingSpotNumber) {
         this.parkingSpotNumber = parkingSpotNumber;
-    }
-
-    public String getLicensePlateCar() {
-        return licensePlateCar;
-    }
-
-    public void setLicensePlateCar(String licensePlateCar) {
-        this.licensePlateCar = licensePlateCar;
-    }
-
-    public String getBrandCar() {
-        return brandCar;
-    }
-
-    public void setBrandCar(String brandCar) {
-        this.brandCar = brandCar;
-    }
-
-    public String getModelCar() {
-        return modelCar;
-    }
-
-    public void setModelCar(String modelCar) {
-        this.modelCar = modelCar;
-    }
-
-    public String getColorCar() {
-        return colorCar;
-    }
-
-    public void setColorCar(String colorCar) {
-        this.colorCar = colorCar;
     }
 
     public LocalDateTime getRegistrationDate() {

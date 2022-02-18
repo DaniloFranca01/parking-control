@@ -1,0 +1,17 @@
+package com.api.parkingcontrol.controllers;
+
+import com.api.parkingcontrol.services.VehicleService;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/vehicles")
+public class VehicleController {
+    final VehicleService vehicleService;
+
+    public VehicleController(VehicleService vehicleService) {
+        this.vehicleService = vehicleService;
+    }
+}
