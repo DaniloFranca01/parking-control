@@ -13,6 +13,8 @@ public class VehicleDto {
     private String modelVehicle;
     @NotBlank
     private String colorVehicle;
+    @NotBlank
+    private String typeVehicle;
 
     public String getLicensePlateVehicle() {
         return licensePlateVehicle;
@@ -44,5 +46,13 @@ public class VehicleDto {
 
     public void setColorVehicle(String colorVehicle) {
         this.colorVehicle = colorVehicle;
+    }
+
+    public String getTypeVehicle() {
+        return typeVehicle;
+    }
+
+    public void setTypeVehicle(String typeVehicle) {
+        this.typeVehicle = typeVehicle;
     }
 }

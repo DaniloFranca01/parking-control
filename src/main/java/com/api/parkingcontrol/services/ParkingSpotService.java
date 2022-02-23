@@ -1,6 +1,5 @@
 package com.api.parkingcontrol.services;
 
-import com.api.parkingcontrol.dto.VehicleDto;
 import com.api.parkingcontrol.models.ParkingSpotModel;
 import com.api.parkingcontrol.repositories.ParkingSpotRepository;
 import org.springframework.data.domain.Page;

@@ -2,7 +2,6 @@ package com.api.parkingcontrol.controllers;
 
 import com.api.parkingcontrol.dto.ParkingSpotDto;
 import com.api.parkingcontrol.models.ParkingSpotModel;
-import com.api.parkingcontrol.models.VehicleModel;
 import com.api.parkingcontrol.services.ParkingSpotService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,9 +30,7 @@ public class ParkingSpotController {
     }
     @PostMapping
     public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDto parkingSpotDto){
-        var vehicleModel = new VehicleModel();
-        BeanUtils.copyProperties(parkingSpotDto.getVehicle(), vehicleModel);
-        if(parkingSpotService.existsByVehicle(vehicleModel.getId())){
+        if(parkingSpotService.existsByVehicle(parkingSpotDto.getVehicle().getId())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: License Plate Car is already in use!");
         }
         if(parkingSpotService.existsByParkingSpotNumber(parkingSpotDto.getParkingSpotNumber())){
@@ -81,11 +77,9 @@ public class ParkingSpotController {
         if (!parkingSpotModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot Not Found.");
         }
-        var vehicleModel = new VehicleModel();
-        BeanUtils.copyProperties(parkingSpotDto.getVehicle(), vehicleModel);
         var parkingSpotModel = parkingSpotModelOptional.get();
         parkingSpotModel.setParkingSpotNumber(parkingSpotDto.getParkingSpotNumber());
-        parkingSpotModel.setVehicle(vehicleModel);
+        parkingSpotModel.setVehicle(parkingSpotDto.getVehicle());
         parkingSpotModel.setResponsibleName(parkingSpotDto.getResponsibleName());
         parkingSpotModel.setApartment(parkingSpotDto.getApartment());
         parkingSpotModel.setBlock(parkingSpotDto.getBlock());
