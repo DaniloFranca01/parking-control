@@ -26,8 +26,9 @@ public class ParkingSpotService {
     public ParkingSpotModel save(ParkingSpotModel parkingSpotModel){
         return parkingSpotRepository.save(parkingSpotModel);
     }
-    public boolean existsByVehicle(UUID vehicle_id) {
-        return parkingSpotRepository.existsByVehicle(vehicle_id);
+
+    public boolean existsByVehicleId(UUID vehicle_id) {
+        return parkingSpotRepository.existsByVehicleId(vehicle_id);
     }
 
     public boolean existsByParkingSpotNumber(String parkingSpotNumber) {

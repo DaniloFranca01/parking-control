@@ -16,7 +16,7 @@ public class ParkingSpotModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Type(type="org.hibernate.type.UUIDCharType")
     private UUID id;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private VehicleModel vehicle;
     @Column(nullable = false, unique = true, length = 10)

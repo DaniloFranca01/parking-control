@@ -16,7 +16,7 @@ public interface ParkingSpotRepository extends JpaRepository<ParkingSpotModel, U
     Page<ParkingSpotModel> findAll(Pageable pageable);
     Optional<ParkingSpotModel> findById(UUID id);
     void delete(ParkingSpotModel parkingSpotModel);
-    boolean existsByVehicle(UUID vehicle_id);
+    boolean existsByVehicleId(UUID vehicle_id);
     boolean existsByParkingSpotNumber(String parkingSpotNumber);
     boolean existsByApartmentAndBlock(String apartment, String block);
 }
