@@ -1,7 +1,10 @@
 package com.api.parkingcontrol.controllers;
 
 import com.api.parkingcontrol.dto.VehicleDto;
+import com.api.parkingcontrol.exceptions.AlreadyExistsException;
+import com.api.parkingcontrol.exceptions.vehicles.VehicleNotFoundException;
 import com.api.parkingcontrol.models.VehicleModel;
+import com.api.parkingcontrol.payloads.ApiResponse;
 import com.api.parkingcontrol.services.VehicleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -28,54 +31,66 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<Object> saveVehicle(@RequestBody @Valid VehicleDto vehicleDto) {
-        var vehicleModel = new VehicleModel();
-        BeanUtils.copyProperties(vehicleDto, vehicleModel);
-        if (vehicleService.existsByLicensePlateVehicle((vehicleModel.getLicensePlateVehicle()))) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: License Plate Car is already in use!");
+        try {
+            var vehicleModel = new VehicleModel();
+            BeanUtils.copyProperties(vehicleDto, vehicleModel);
+            vehicleService.save(vehicleModel);
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, e.getMessage()));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(vehicleService.save(vehicleModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "Vehicle created"));
     }
 
     @GetMapping
-    public ResponseEntity<Page<VehicleModel>> getAllVehicles(@PageableDefault(page = 0, size = 10, sort = "id",
-            direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<VehicleModel>> getAllVehicles(
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(vehicleService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneVehicle(@PathVariable(value = "id") UUID id) {
-        Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
-        if (!vehicleModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle Not Found.");
+        try {
+            Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
+            var vehicleModel = vehicleModelOptional.get();
+            return ResponseEntity.status(HttpStatus.OK).body(vehicleModel);
+
+        } catch (VehicleNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage()));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleModelOptional.get());
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteVehicle(@PathVariable(value = "id") UUID id) {
-        Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
-        if (!vehicleModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle Not Found.");
+
+        try {
+            Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
+            var vehicleModel = vehicleModelOptional.get();
+            vehicleService.delete(vehicleModel);
+
+        } catch (VehicleNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage()));
         }
-        vehicleService.delete(vehicleModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Vehicle deleted successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Vehicle deleted successfully"));
+
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateVehicle(@PathVariable(value = "id") UUID id,
-                                                @RequestBody @Valid VehicleDto vehicleDto) {
-        Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
-        if (!vehicleModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle Not Found.");
+            @RequestBody @Valid VehicleDto vehicleDto) {
+        try {
+            Optional<VehicleModel> vehicleModelOptional = vehicleService.findById(id);
+            var vehicleModel = vehicleModelOptional.get();
+            vehicleModel.setLicensePlateVehicle(vehicleDto.getLicensePlateVehicle());
+            vehicleModel.setModelVehicle(vehicleDto.getModelVehicle());
+            vehicleModel.setBrandVehicle(vehicleDto.getBrandVehicle());
+            vehicleModel.setColorVehicle(vehicleDto.getColorVehicle());
+            vehicleModel.setTypeVehicle(vehicleDto.getTypeVehicle());
+            vehicleService.update(vehicleModel);
+        } catch (VehicleNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage()));
         }
 
-        var vehicleModel = vehicleModelOptional.get();
-        vehicleModel.setLicensePlateVehicle(vehicleDto.getLicensePlateVehicle());
-        vehicleModel.setModelVehicle(vehicleDto.getModelVehicle());
-        vehicleModel.setBrandVehicle(vehicleDto.getBrandVehicle());
-        vehicleModel.setColorVehicle(vehicleDto.getColorVehicle());
-        vehicleModel.setTypeVehicle(vehicleDto.getTypeVehicle());
-
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleService.save(vehicleModel));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Vehicle updated successfully"));
     }
 }

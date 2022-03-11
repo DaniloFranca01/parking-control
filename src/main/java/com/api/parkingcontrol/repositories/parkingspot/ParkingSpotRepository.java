@@ -1,4 +1,4 @@
-package com.api.parkingcontrol.repositories;
+package com.api.parkingcontrol.repositories.parkingspot;
 
 import com.api.parkingcontrol.models.ParkingSpotModel;
 import org.springframework.data.domain.Page;
